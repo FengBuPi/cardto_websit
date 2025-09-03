@@ -28,7 +28,6 @@
     // 代码质量检查
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     // 文件和导入
@@ -43,6 +42,8 @@
     "isolatedModules": true,
     "incremental": true,
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "allowImportingTsExtensions": false,
     // JSX 支持 (Next.js)
     "jsx": "preserve",
     // Next.js 插件

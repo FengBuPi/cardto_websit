@@ -1,3 +1,4 @@
+import { QueryExample } from '@/components/query-example';
 import Image from 'next/image';
 
 export default function Home() {
@@ -12,6 +13,10 @@ export default function Home() {
           height={38}
           priority
         />
+
+        {/* TanStack Query 示例 */}
+        <QueryExample />
+
         <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
           <li className="mb-2 tracking-[-.01em]">
             Get started by editing{' '}
