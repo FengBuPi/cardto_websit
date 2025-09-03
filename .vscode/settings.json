@@ -1,0 +1,141 @@
+{
+  // 基本编辑器设置
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  // TypeScript 设置
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.quoteStyle": "single",
+  "typescript.preferences.noSemicolons": false,
+  // JavaScript 设置
+  "javascript.preferences.quoteStyle": "single",
+  "javascript.preferences.noSemicolons": false,
+  "javascript.suggest.autoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  // ESLint 设置
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.codeActionsOnSave.mode": "all",
+  "eslint.format.enable": true,
+  "eslint.workingDirectories": [
+    "."
+  ],
+  // Tailwind CSS 设置
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "cva\\(([^)]*)\\)",
+      "[\"'`]([^\"'`]*).*?[\"'`]"
+    ],
+    [
+      "cx\\(([^)]*)\\)",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ]
+  ],
+  // Next.js 设置
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
+  "emmet.preferences": {
+    "typescript": "html"
+  },
+  // 文件关联
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.tsx": "typescriptreact",
+    "*.ts": "typescript",
+    "*.jsx": "javascriptreact",
+    "*.js": "javascript",
+    "*.mjs": "javascript",
+    "*.mts": "typescript",
+    "*.mdx": "markdown"
+  },
+  // 排除文件
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/.storybook-out": true,
+    "**/tsconfig.tsbuildinfo": true
+  },
+  // 搜索排除
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/out": true,
+    "**/build": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/.storybook-out": true,
+    "**/tsconfig.tsbuildinfo": true,
+    "**/pnpm-lock.yaml": true
+  },
+  // 终端设置
+  "terminal.integrated.env.linux": {
+    "NODE_ENV": "development"
+  },
+  "terminal.integrated.env.osx": {
+    "NODE_ENV": "development"
+  },
+  "terminal.integrated.env.windows": {
+    "NODE_ENV": "development"
+  },
+  // Git 设置
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  // 工作区信任
+  "security.workspace.trust.untrustedFiles": "open",
+  // 其他工具设置
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": false,
+  // Storybook 设置
+  "storybook.ignoredStories": [
+    "**/*.stories.mdx"
+  ],
+  // 测试设置
+  "vitest.enable": true,
+  "vitest.include": [
+    "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"
+  ],
+  // 自动保存
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  // 面包屑导航
+  "breadcrumbs.enabled": true,
+  // 括号匹配
+  "editor.matchBrackets": "always",
+  // 错误透镜
+  "errorLens.enabled": true,
+  "errorLens.excludeBySource": [
+    "cSpell"
+  ],
+  // 代码运行
+  "code-runner.executorMap": {
+    "typescript": "npx tsx"
+  }
+}

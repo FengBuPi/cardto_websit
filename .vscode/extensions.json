@@ -1,0 +1,41 @@
+{
+  "recommendations": [
+    // 核心开发工具
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json",
+    // React/Next.js 相关
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    // 测试相关
+    "vitest.explorer",
+    "ms-playwright.playwright",
+    // Storybook 相关
+    "storybook.vscode-storybook",
+    // 代码质量
+    "usernamehw.errorlens",
+    "ms-vscode.vscode-css-peek",
+    "formulahendry.auto-close-tag",
+    "streetsidesoftware.code-spell-checker",
+    // 开发工具
+    "ms-vscode.vscode-git-graph",
+    "gruntfuggly.todo-tree",
+    "ms-vscode.vscode-markdown-preview-enhanced",
+    "redhat.vscode-yaml",
+    // 主题和图标
+    "ms-vscode.vscode-icons",
+    "ms-vscode.vscode-theme-default-dark",
+    // 其他实用工具
+    "ms-vscode.vscode-live-server",
+    "formulahendry.code-runner"
+  ],
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript",
+    "hookyqr.beautify",
+    "ms-vscode.vscode-css-intellisense"
+  ]
+}
