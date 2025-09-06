@@ -1,4 +1,4 @@
-import { clientError, conflictError, notFoundError, serverError, successResponse, withApiHandler } from '@/lib/api';
+import { clientError, notFoundError, serverError, successResponse, withApiHandler } from '@/lib/api';
 import { db } from '@/lib/db';
 import { dataStorage } from '@/schema';
 import type { ApiResponse } from '@/types';
@@ -6,77 +6,124 @@ import { eq } from 'drizzle-orm';
 import { NextRequest } from 'next/server';
 
 // POST /api/data - 存储数据
-async function _POST(request: NextRequest): ApiResponse<{ id: number; key: string; createdAt: Date }> {
+async function _POST(request: NextRequest): ApiResponse<{ id: number; createdAt: Date }> {
+  const startTime = Date.now();
+
   try {
     const body = await request.json();
-    const { key, data, description, metadata } = body;
+    const { data, description } = body;
 
     // 基本检查
-    if (!key || !data) {
-      return clientError('key 和 data 字段不能为空', 400);
+    if (!data) {
+      return clientError('data 字段不能为空', 400);
     }
 
-    // 检查 key 是否已存在
-    const existingData = await db
-      .select()
-      .from(dataStorage)
-      .where(eq(dataStorage.key, key))
-      .limit(1);
-
-    if (existingData.length > 0) {
-      return conflictError('数据');
+    // 检查数据大小（防止过大的数据导致性能问题）
+    if (typeof data === 'string' && data.length > 1000000) { // 1MB限制
+      return clientError('数据过大，请减少数据大小', 400);
     }
+
+    // eslint-disable-next-line no-console
+    console.log(`[API] 开始插入数据，数据大小: ${JSON.stringify(data).length} 字符`);
 
     // 插入新数据
     const result = await db
       .insert(dataStorage)
       .values({
-        key,
         data,
         description: description || null,
-        metadata: metadata || null,
       })
       .returning();
 
+    const endTime = Date.now();
+    // eslint-disable-next-line no-console
+    console.log(`[API] 数据插入完成，耗时: ${endTime - startTime}ms`);
+
+    // 检查插入结果
+    if (result.length === 0) {
+      return serverError('数据插入失败');
+    }
+
+    const insertedData = result[0];
+    if (!insertedData) {
+      return serverError('数据插入失败');
+    }
+
     return successResponse(
       {
-        id: result[0].id,
-        key: result[0].key,
-        createdAt: result[0].createdAt,
+        id: insertedData.id,
+        createdAt: insertedData.createdAt || new Date(),
       },
       '数据存储成功',
       201
     );
 
   } catch (error) {
-    return serverError('服务器内部错误:' + error);
+    const endTime = Date.now();
+    // eslint-disable-next-line no-console
+    console.error(`[API] 数据插入失败，耗时: ${endTime - startTime}ms`, error);
+
+    // 更详细的错误信息
+    if (error instanceof Error) {
+      if (error.message.includes('timeout')) {
+        return serverError('数据库连接超时，请稍后重试');
+      }
+      if (error.message.includes('connection')) {
+        return serverError('数据库连接失败，请检查网络连接');
+      }
+    }
+
+    return serverError('服务器内部错误: ' + (error instanceof Error ? error.message : String(error)));
   }
 }
 
-// GET /api/data?key=xxx - 获取数据
-async function _GET(request: NextRequest): ApiResponse<{ id: number; key: string; data: unknown; description: string | null; metadata: unknown | null; createdAt: Date; updatedAt: Date }> {
+// GET /api/data?id=xxx - 获取数据
+async function _GET(request: NextRequest): ApiResponse<{ id: number; data: unknown; description: string | null; createdAt: Date; updatedAt: Date }> {
+  const startTime = Date.now();
+
   try {
     const { searchParams } = new URL(request.url);
-    const key = searchParams.get('key');
+    const id = searchParams.get('id');
 
-    if (!key) {
-      return clientError('缺少 key 参数', 400);
+    if (!id) {
+      return clientError('缺少 id 参数', 400);
     }
+
+    // eslint-disable-next-line no-console
+    console.log(`[API] 开始查询数据，ID: ${id}`);
 
     const result = await db
       .select()
       .from(dataStorage)
-      .where(eq(dataStorage.key, key))
+      .where(eq(dataStorage.id, parseInt(id)))
       .limit(1);
+
+    const endTime = Date.now();
+    // eslint-disable-next-line no-console
+    console.log(`[API] 数据查询完成，耗时: ${endTime - startTime}ms`);
 
     if (result.length === 0) {
       return notFoundError('数据');
     }
 
-    return successResponse(result[0]);
+    return successResponse(result[0] as { id: number; data: unknown; description: string | null; createdAt: Date; updatedAt: Date });
 
   } catch (error) {
-    return serverError('服务器内部错误:' + error);
+    const endTime = Date.now();
+    // eslint-disable-next-line no-console
+    console.error(`[API] 数据查询失败，耗时: ${endTime - startTime}ms`, error);
+
+    // 更详细的错误信息
+    if (error instanceof Error) {
+      if (error.message.includes('timeout')) {
+        return serverError('数据库连接超时，请稍后重试');
+      }
+      if (error.message.includes('connection')) {
+        return serverError('数据库连接失败，请检查网络连接');
+      }
+    }
+
+    return serverError('服务器内部错误: ' + (error instanceof Error ? error.message : String(error)));
   }
 }
 

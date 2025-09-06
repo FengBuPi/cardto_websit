@@ -5,25 +5,30 @@ import type { ApiResponse } from '@/types';
 import { eq } from 'drizzle-orm';
 import { NextRequest } from 'next/server';
 
-// PUT /api/data/[key] - 更新数据
+// PUT /api/data/[id] - 更新数据
 async function _PUT(
   request: NextRequest,
-  { params }: { params: { key: string } }
-): ApiResponse<{ id: number; key: string; updatedAt: Date }> {
+  { params }: { params: { id: string } }
+): ApiResponse<{ id: number; updatedAt: Date }> {
   try {
     const body = await request.json();
-    const { data, description, metadata } = body;
+    const { data, description } = body;
 
     // 基本检查
     if (!data) {
       return clientError('data 字段不能为空', 400);
     }
 
+    const dataId = parseInt(params.id);
+    if (isNaN(dataId)) {
+      return clientError('无效的 id 参数', 400);
+    }
+
     // 检查数据是否存在
     const existingData = await db
       .select()
       .from(dataStorage)
-      .where(eq(dataStorage.key, params.key))
+      .where(eq(dataStorage.id, dataId))
       .limit(1);
 
     if (existingData.length === 0) {
@@ -36,17 +41,25 @@ async function _PUT(
       .set({
         data,
         description: description || null,
-        metadata: metadata || null,
         updatedAt: new Date(),
       })
-      .where(eq(dataStorage.key, params.key))
+      .where(eq(dataStorage.id, dataId))
       .returning();
+
+    // 检查更新结果
+    if (result.length === 0) {
+      return serverError('数据更新失败');
+    }
+
+    const updatedData = result[0];
+    if (!updatedData) {
+      return serverError('数据更新失败');
+    }
 
     return successResponse(
       {
-        id: result[0].id,
-        key: result[0].key,
-        updatedAt: result[0].updatedAt,
+        id: updatedData.id,
+        updatedAt: updatedData.updatedAt || new Date(),
       },
       '数据更新成功'
     );
@@ -56,17 +69,22 @@ async function _PUT(
   }
 }
 
-// DELETE /api/data/[key] - 删除数据
+// DELETE /api/data/[id] - 删除数据
 async function _DELETE(
   _request: NextRequest,
-  { params }: { params: { key: string } }
+  { params }: { params: { id: string } }
 ): ApiResponse<null> {
   try {
+    const dataId = parseInt(params.id);
+    if (isNaN(dataId)) {
+      return clientError('无效的 id 参数', 400);
+    }
+
     // 检查数据是否存在
     const existingData = await db
       .select()
       .from(dataStorage)
-      .where(eq(dataStorage.key, params.key))
+      .where(eq(dataStorage.id, dataId))
       .limit(1);
 
     if (existingData.length === 0) {
@@ -76,7 +94,7 @@ async function _DELETE(
     // 删除数据
     await db
       .delete(dataStorage)
-      .where(eq(dataStorage.key, params.key));
+      .where(eq(dataStorage.id, dataId));
 
     return successResponse(
       null,

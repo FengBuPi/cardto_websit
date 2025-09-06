@@ -1,9 +1,9 @@
 // @ts-check
 
 import eslint from '@eslint/js';
+import storybook from 'eslint-plugin-storybook';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import storybook from 'eslint-plugin-storybook';
 
 export default tseslint.config(
   // 基础推荐配置
@@ -48,6 +48,7 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'error', // 禁用 ! 断言操作符
     },
   },
 
