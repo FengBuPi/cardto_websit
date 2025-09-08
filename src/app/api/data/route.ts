@@ -18,11 +18,6 @@ async function _POST(request: NextRequest): ApiResponse<{ id: number; createdAt:
       return clientError('data 字段不能为空', 400);
     }
 
-    // 检查数据大小（防止过大的数据导致性能问题）
-    if (typeof data === 'string' && data.length > 1000000) { // 1MB限制
-      return clientError('数据过大，请减少数据大小', 400);
-    }
-
     // eslint-disable-next-line no-console
     console.log(`[API] 开始插入数据，数据大小: ${JSON.stringify(data).length} 字符`);
 
