@@ -9,8 +9,6 @@ interface Collaborator {
 }
 
 interface ContentCardProps {
-  id: number;
-  thumbnail: string;
   title: string;
   metadata: string;
   updateTime: string;
@@ -19,8 +17,6 @@ interface ContentCardProps {
 }
 
 export function ContentCard({
-  id,
-  thumbnail,
   title,
   metadata,
   updateTime,
