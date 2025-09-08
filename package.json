@@ -12,10 +12,15 @@
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "数据库迁移相关命令": "",
+    "生成数据库迁移文件（基于 schema 变更）": "",
     "db:generate": "drizzle-kit generate",
+    "应用迁移文件到数据库（生产环境推荐）": "",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push"
+    "推送 schema 到数据库（开发环境推荐）": "",
+    "db:push": "drizzle-kit push",
+    "重置数据库（删除远程数据库的所有表并重新创建）Ai禁止使用该命令": "",
+    "db:reset": "drizzle-kit drop && pnpm db:generate && pnpm db:migrate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
