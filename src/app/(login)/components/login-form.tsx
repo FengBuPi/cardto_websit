@@ -5,103 +5,25 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { AlertCircle, ArrowRight, Github } from 'lucide-react';
-import { useState } from 'react';
-
-interface LoginError {
-  message: string;
-  type: 'error' | 'success';
-}
+import { useLoginContext } from '../context/use-login-context';
 
 export function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<LoginError | null>(null);
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        // 登录成功，保存 token 并跳转
-        localStorage.setItem('auth_token', result.data.token);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        window.location.href = '/';
-      } else {
-        setError({
-          message: result.error || '登录失败',
-          type: 'error'
-        });
-      }
-    } catch (error) {
-      console.error('登录错误:', error);
-      setError({
-        message: '登录失败，请稍后重试',
-        type: 'error'
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSocialLogin = async (provider: 'github' | 'google') => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: `user@${provider}.com`, // 模拟社交登录邮箱
-          provider
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        // 登录成功，保存 token 并跳转
-        localStorage.setItem('auth_token', result.data.token);
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        window.location.href = '/';
-      } else {
-        setError({
-          message: result.error || '登录失败',
-          type: 'error'
-        });
-      }
-    } catch (error) {
-      console.error('登录错误:', error);
-      setError({
-        message: '登录失败，请稍后重试',
-        type: 'error'
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    email,
+    setEmail,
+    isLoading,
+    error,
+    handleSocialLogin,
+    handleFormSubmit,
+  } = useLoginContext();
 
   return (
     <>
       {/* 错误提示 */}
       {error && (
         <div className={`mb-4 p-3 rounded-lg flex items-center ${error.type === 'error'
-            ? 'bg-red-50 text-red-700 border border-red-200'
-            : 'bg-green-50 text-green-700 border border-green-200'
+          ? 'bg-red-50 text-red-700 border border-red-200'
+          : 'bg-green-50 text-green-700 border border-green-200'
           }`}>
           <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
           <span className="text-sm">{error.message}</span>
@@ -145,7 +67,7 @@ export function LoginForm() {
       </div>
 
       {/* 邮箱登录表单 */}
-      <form onSubmit={handleEmailLogin} className="space-y-4">
+      <form onSubmit={handleFormSubmit} className="space-y-4">
         <div>
           <Label htmlFor="email" className="text-sm font-medium text-gray-700">
             邮箱地址

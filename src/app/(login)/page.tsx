@@ -28,7 +28,7 @@ export default function LoginPage() {
 
               {/* 标题 */}
               <h1 className="text-2xl font-bold text-center text-gray-900 mb-8">
-                继续使用 CardTo
+                CardTo
               </h1>
 
               {/* 登录表单组件 */}
@@ -45,7 +45,7 @@ export default function LoginPage() {
       <div className="fixed bottom-6 right-6 z-20">
         <Button
           size="icon"
-          className="w-12 h-12 rounded-full bg-pink-500 hover:bg-pink-600 shadow-lg"
+          className="w-12 h-12 rounded-full bg-blue-600 hover:bg-pink-600 shadow-lg"
         >
           <Mail className="w-5 h-5 text-white" />
         </Button>
