@@ -1,14 +1,13 @@
 'use client';
 
+import { ContentCard } from '@/components/content-card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpDown, FolderPlus, HelpCircle, MoreHorizontal } from 'lucide-react';
-import { ContentCard } from './components/content-card';
 
 export default function MainContent() {
   const contentCards = [
     {
       id: 1,
-      thumbnail: '/api/placeholder/200/120',
       title: '内容大脑新增-报表',
       metadata: '外部文件',
       updateTime: '更新于 8月26日 15:54',
@@ -17,7 +16,6 @@ export default function MainContent() {
     },
     {
       id: 2,
-      thumbnail: '/api/placeholder/200/120',
       title: '1.3 团队库',
       metadata: '外部文件',
       updateTime: '更新于 8月24日 15:57',
@@ -26,7 +24,6 @@ export default function MainContent() {
     },
     {
       id: 3,
-      thumbnail: '/api/placeholder/200/120',
       title: '京准通 | 腾讯 | 阿里妈妈接入',
       metadata: '外部文件',
       updateTime: '更新于 8月7日 11:06',
@@ -35,7 +32,6 @@ export default function MainContent() {
     },
     {
       id: 4,
-      thumbnail: '/api/placeholder/200/120',
       title: 'Design Platform MCP',
       metadata: '外部...',
       updateTime: '更新于 6月25日 16:33',
@@ -51,7 +47,10 @@ export default function MainContent() {
     <>
       {/* Header Section */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-foreground">分享给我的</h1>
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">分享给我的</h1>
+          <p className="text-muted-foreground">查看您的工作概览和最新动态</p>
+        </div>
         <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <FolderPlus className="w-4 h-4 mr-2" />
           导入文件
@@ -73,9 +72,17 @@ export default function MainContent() {
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {contentCards.map((card) => (
-          <ContentCard key={card.id} {...card} />
-        ))}
+        {contentCards.map((card) => {
+          return (
+            <ContentCard
+              key={card.id}
+              title={card.title}
+              metadata={card.metadata}
+              updateTime={card.updateTime}
+              collaborators={card.collaborators}
+            />
+          );
+        })}
       </div>
 
       {/* Help Button */}

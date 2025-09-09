@@ -1,5 +1,6 @@
 'use client';
 
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Bell, Search } from 'lucide-react';
@@ -32,6 +33,9 @@ export function Header() {
         <Button className="design-gradient text-white px-4 py-2 h-auto text-sm font-medium whitespace-nowrap">
           席位体系升级 全新设计、产品、研发席位 了解更多
         </Button>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
 
         {/* Notification Bell */}
         <div className="relative">
