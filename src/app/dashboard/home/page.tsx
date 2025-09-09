@@ -1,8 +1,9 @@
 'use client';
 
+import { ContentCard } from '@/components/content-card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowUpDown, FileText, HelpCircle, MoreHorizontal, Plus, Share, TrendingUp, Users } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowUpDown, FileText, HelpCircle, Plus, Share, TrendingUp, Users } from 'lucide-react';
 
 export default function HomePage() {
   const stats = [
@@ -13,10 +14,39 @@ export default function HomePage() {
   ];
 
   const recentProjects = [
-    { name: '内容大脑新增-报表', type: 'video-brain', lastUpdate: '2小时前' },
-    { name: '1.3 团队库', type: 'video-brain-1.3', lastUpdate: '1天前' },
-    { name: '京准通 | 腾讯 | 阿里妈妈接入', type: 'document-collage', lastUpdate: '3天前' },
-    { name: 'Design Platform MCP', type: 'design-platform-mcp', lastUpdate: '1周前' },
+    {
+      id: 1,
+      title: '内容大脑新增-报表',
+      metadata: '项目',
+      updateTime: '更新于 2小时前',
+      collaborators: []
+    },
+    {
+      id: 2,
+      title: '1.3 团队库',
+      metadata: '项目',
+      updateTime: '更新于 1天前',
+      collaborators: [
+        { name: 'A', color: 'blue' }
+      ]
+    },
+    {
+      id: 3,
+      title: '京准通 | 腾讯 | 阿里妈妈接入',
+      metadata: '项目',
+      updateTime: '更新于 3天前',
+      collaborators: []
+    },
+    {
+      id: 4,
+      title: 'Design Platform MCP',
+      metadata: '项目',
+      updateTime: '更新于 1周前',
+      collaborators: [
+        { name: 'B', color: 'blue' },
+        { name: 'C', color: 'blue' }
+      ]
+    },
   ];
 
   return (
@@ -64,24 +94,15 @@ export default function HomePage() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recentProjects.map((project, index) => (
-            <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
-              <CardHeader>
-                <CardTitle className="text-base">{project.name}</CardTitle>
-                <CardDescription className="text-sm">
-                  类型: {project.type}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>最后更新: {project.lastUpdate}</span>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {recentProjects.map((project) => (
+            <ContentCard
+              key={project.id}
+              title={project.title}
+              metadata={project.metadata}
+              updateTime={project.updateTime}
+              collaborators={project.collaborators}
+            />
           ))}
         </div>
       </div>
