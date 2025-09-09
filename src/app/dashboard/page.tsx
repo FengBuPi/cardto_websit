@@ -1,10 +1,6 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-export default function MainContent({ children }: { children: React.ReactNode }) {
-
-  return (
-    <main className="flex-1 bg-background p-6">
-      {children}
-    </main>
-  );
+export default function Dashboard() {
+  // 服务器端重定向到主页
+  redirect('/dashboard/home');
 }

@@ -2,16 +2,20 @@
 
 import { Button } from '@/components/ui/button';
 import { ChevronDown, FileText, Grid3X3, Home, Plus, Share } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface SidebarProps {
   activeItem?: string;
 }
 
 export function Sidebar({ activeItem = 'shared' }: SidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const navigationItems = [
-    { id: 'home', icon: Home, label: '主页' },
-    { id: 'drafts', icon: FileText, label: '草稿箱' },
-    { id: 'shared', icon: Share, label: '分享给我的' },
+    { id: 'home', icon: Home, label: '主页', href: '/dashboard/home' },
+    { id: 'drafts', icon: FileText, label: '草稿箱', href: '/dashboard/drafts' },
+    { id: 'shared', icon: Share, label: '分享给我的', href: '/dashboard/share-me' },
   ];
 
   const resourceItems = [
@@ -25,6 +29,19 @@ export function Sidebar({ activeItem = 'shared' }: SidebarProps) {
     { id: 'business-b', label: '业务B' },
   ];
 
+  // 导航处理函数
+  const handleNavigation = (href: string) => {
+    router.push(href);
+  };
+
+  // 根据当前路径确定活动项
+  const getActiveItem = () => {
+    if (pathname === '/dashboard' || pathname === '/dashboard/home') return 'home';
+    if (pathname === '/dashboard/drafts') return 'drafts';
+    if (pathname === '/dashboard/share-me') return 'shared';
+    return activeItem;
+  };
+
   return (
     <aside className="w-64 bg-sidebar border-r border-sidebar-border h-full flex flex-col">
       {/* Navigation */}
@@ -32,15 +49,16 @@ export function Sidebar({ activeItem = 'shared' }: SidebarProps) {
         <div className="space-y-1">
           {navigationItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.id;
+            const isActive = getActiveItem() === item.id;
 
             return (
               <Button
                 key={item.id}
                 variant="ghost"
+                onClick={() => handleNavigation(item.href)}
                 className={`w-full justify-start h-10 px-3 ${isActive
-                    ? 'design-sidebar-active text-sidebar-foreground'
-                    : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                  ? 'design-sidebar-active text-sidebar-foreground'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                   }`}
               >
                 <Icon className="w-4 h-4 mr-3" />

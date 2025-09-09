@@ -7,7 +7,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <Header />
       <div className="flex-1 flex overflow-hidden">
         <Sidebar activeItem="shared" />
-        {children}
+        <main className="flex-1 bg-background p-6">
+          {children}
+        </main>
       </div>
     </div>
   );
