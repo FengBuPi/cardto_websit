@@ -9,22 +9,23 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Check, Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-// import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  // const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // // 防止水合不匹配
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
-
-  // if (!mounted) {
-  //   return null;
-  // }
+  // 防止水合错误
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const getIcon = () => {
+    // 在组件未挂载时返回默认图标，避免水合不匹配
+    if (!mounted) {
+      return <Sun className="h-4 w-4" />;
+    }
+
     switch (theme) {
       case 'light':
         return <Sun className="h-4 w-4" />;
@@ -58,7 +59,7 @@ export function ThemeToggle() {
             <Sun className="h-4 w-4 mr-2" />
             <span>浅色模式</span>
           </div>
-          {theme === 'light' && <Check className="h-4 w-4" />}
+          {mounted && theme === 'light' && <Check className="h-4 w-4" />}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('dark')}
@@ -68,7 +69,7 @@ export function ThemeToggle() {
             <Moon className="h-4 w-4 mr-2" />
             <span>深色模式</span>
           </div>
-          {theme === 'dark' && <Check className="h-4 w-4" />}
+          {mounted && theme === 'dark' && <Check className="h-4 w-4" />}
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('system')}
@@ -78,7 +79,7 @@ export function ThemeToggle() {
             <Monitor className="h-4 w-4 mr-2" />
             <span>跟随系统</span>
           </div>
-          {theme === 'system' && <Check className="h-4 w-4" />}
+          {mounted && theme === 'system' && <Check className="h-4 w-4" />}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
