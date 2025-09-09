@@ -7,11 +7,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useTheme } from '@/contexts/theme-context';
 import { Check, Monitor, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
+// import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  // const [mounted, setMounted] = useState(false);
+
+  // // 防止水合不匹配
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, []);
+
+  // if (!mounted) {
+  //   return null;
+  // }
 
   const getIcon = () => {
     switch (theme) {
