@@ -123,8 +123,7 @@
     "**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"
   ],
   // 自动保存
-  "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 1000,
+  "files.autoSave": "off",
   // 面包屑导航
   "breadcrumbs.enabled": true,
   // 括号匹配
