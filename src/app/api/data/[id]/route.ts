@@ -1,8 +1,6 @@
 import { clientError, notFoundError, serverError, successResponse, withApiHandler } from '@/lib/api';
-import { db } from '@/lib/db';
-import { dataStorage } from '@/schema';
+import { deletePost, fetchPostById, updatePost } from '@/services/post-service';
 import type { ApiResponse } from '@/types';
-import { eq } from 'drizzle-orm';
 import { NextRequest } from 'next/server';
 
 // PUT /api/data/[id] - 更新数据
@@ -11,8 +9,7 @@ async function _PUT(
   { params }: { params: { id: string } }
 ): ApiResponse<{ id: number; updatedAt: Date }> {
   try {
-    const body = await request.json();
-    const { data, description } = body;
+    const { data } = await request.json();
 
     // 基本检查
     if (!data) {
@@ -25,33 +22,14 @@ async function _PUT(
     }
 
     // 检查数据是否存在
-    const existingData = await db
-      .select()
-      .from(dataStorage)
-      .where(eq(dataStorage.id, dataId))
-      .limit(1);
-
-    if (existingData.length === 0) {
+    const existingData = await fetchPostById(dataId);
+    if (!existingData) {
       return notFoundError('数据');
     }
 
-    // 更新数据
-    const result = await db
-      .update(dataStorage)
-      .set({
-        data,
-        description: description || null,
-        updatedAt: new Date(),
-      })
-      .where(eq(dataStorage.id, dataId))
-      .returning();
+    // 使用服务层更新数据
+    const updatedData = await updatePost(dataId, { data });
 
-    // 检查更新结果
-    if (result.length === 0) {
-      return serverError('数据更新失败');
-    }
-
-    const updatedData = result[0];
     if (!updatedData) {
       return serverError('数据更新失败');
     }
@@ -81,20 +59,16 @@ async function _DELETE(
     }
 
     // 检查数据是否存在
-    const existingData = await db
-      .select()
-      .from(dataStorage)
-      .where(eq(dataStorage.id, dataId))
-      .limit(1);
-
-    if (existingData.length === 0) {
+    const existingData = await fetchPostById(dataId);
+    if (!existingData) {
       return notFoundError('数据');
     }
 
-    // 删除数据
-    await db
-      .delete(dataStorage)
-      .where(eq(dataStorage.id, dataId));
+    // 使用服务层删除数据
+    const success = await deletePost(dataId);
+    if (!success) {
+      return serverError('数据删除失败');
+    }
 
     return successResponse(
       null,

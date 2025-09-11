@@ -1,8 +1,6 @@
 import { clientError, notFoundError, serverError, successResponse, withApiHandler } from '@/lib/api';
-import { db } from '@/lib/db';
-import { dataStorage } from '@/schema';
+import { createPost, fetchPostById } from '@/services/post-service';
 import type { ApiResponse } from '@/types';
-import { eq } from 'drizzle-orm';
 import { NextRequest } from 'next/server';
 
 // POST /api/data - 存储数据
@@ -11,43 +9,38 @@ async function _POST(request: NextRequest): ApiResponse<{ id: number; createdAt:
 
   try {
     const body = await request.json();
-    const { data, description } = body;
+    const { data, userId } = body;
 
     // 基本检查
     if (!data) {
       return clientError('data 字段不能为空', 400);
     }
 
+    if (!userId) {
+      return clientError('userId 字段不能为空', 400);
+    }
+
     // eslint-disable-next-line no-console
     console.log(`[API] 开始插入数据，数据大小: ${JSON.stringify(data).length} 字符`);
 
-    // 插入新数据
-    const result = await db
-      .insert(dataStorage)
-      .values({
-        data,
-        description: description || null,
-      })
-      .returning();
+    // 使用服务层创建文章
+    const newPost = await createPost({
+      userId: parseInt(userId),
+      data,
+    });
 
     const endTime = Date.now();
     // eslint-disable-next-line no-console
     console.log(`[API] 数据插入完成，耗时: ${endTime - startTime}ms`);
 
-    // 检查插入结果
-    if (result.length === 0) {
-      return serverError('数据插入失败');
-    }
-
-    const insertedData = result[0];
-    if (!insertedData) {
+    if (!newPost) {
       return serverError('数据插入失败');
     }
 
     return successResponse(
       {
-        id: insertedData.id,
-        createdAt: insertedData.createdAt || new Date(),
+        id: newPost.id,
+        createdAt: newPost.createdAt || new Date(),
       },
       '数据存储成功',
       201
@@ -73,7 +66,7 @@ async function _POST(request: NextRequest): ApiResponse<{ id: number; createdAt:
 }
 
 // GET /api/data?id=xxx - 获取数据
-async function _GET(request: NextRequest): ApiResponse<{ id: number; data: unknown; description: string | null; createdAt: Date; updatedAt: Date }> {
+async function _GET(request: NextRequest): ApiResponse<{ id: number; data: unknown; userId: number | null; createdAt: Date | null; updatedAt: Date | null }> {
   const startTime = Date.now();
 
   try {
@@ -87,21 +80,18 @@ async function _GET(request: NextRequest): ApiResponse<{ id: number; data: unkno
     // eslint-disable-next-line no-console
     console.log(`[API] 开始查询数据，ID: ${id}`);
 
-    const result = await db
-      .select()
-      .from(dataStorage)
-      .where(eq(dataStorage.id, parseInt(id)))
-      .limit(1);
+    // 使用服务层获取文章
+    const post = await fetchPostById(parseInt(id));
 
     const endTime = Date.now();
     // eslint-disable-next-line no-console
     console.log(`[API] 数据查询完成，耗时: ${endTime - startTime}ms`);
 
-    if (result.length === 0) {
+    if (!post) {
       return notFoundError('数据');
     }
 
-    return successResponse(result[0] as { id: number; data: unknown; description: string | null; createdAt: Date; updatedAt: Date });
+    return successResponse(post as { id: number; data: unknown; userId: number | null; createdAt: Date | null; updatedAt: Date | null });
 
   } catch (error) {
     const endTime = Date.now();
