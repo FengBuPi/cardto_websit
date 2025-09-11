@@ -1,5 +1,5 @@
-import { Header } from '../../components/layout/header';
-import { Sidebar } from '../../components/layout/sidebar';
+import { Header } from '@/app/dashboard/_components/header';
+import { Sidebar } from '@/app/dashboard/_components/sidebar';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
