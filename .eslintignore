@@ -1,0 +1,5 @@
+# 忽略 UI 组件的 ESLint 检查
+node_modules/
+.next/
+dist/
+build/

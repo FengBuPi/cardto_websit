@@ -1,3 +1,4 @@
+import { QueryProvider } from '@/components/providers/query-provider';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
@@ -35,7 +36,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <QueryProvider>
+            {children}
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
