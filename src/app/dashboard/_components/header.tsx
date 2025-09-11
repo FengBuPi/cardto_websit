@@ -1,8 +1,8 @@
 'use client';
 
-import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Bell, Search } from 'lucide-react';
 
 export function Header() {

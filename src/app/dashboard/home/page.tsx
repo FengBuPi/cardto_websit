@@ -1,8 +1,8 @@
 'use client';
 
-import { ContentCard } from '@/components/content-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ContentCard } from '@/components/ui/content-card';
 import { ArrowUpDown, FileText, HelpCircle, Plus, Share, TrendingUp, Users } from 'lucide-react';
 
 export default function HomePage() {

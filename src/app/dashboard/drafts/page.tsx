@@ -1,7 +1,7 @@
 'use client';
 
-import { ContentCard } from '@/components/content-card';
 import { Button } from '@/components/ui/button';
+import { ContentCard } from '@/components/ui/content-card';
 import { ArrowUpDown, FolderPlus, HelpCircle, MoreHorizontal } from 'lucide-react';
 
 export default function DraftsPage() {
