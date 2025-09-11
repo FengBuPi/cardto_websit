@@ -47,7 +47,7 @@ export default tseslint.config(
           varsIgnorePattern: '^_',
         },
       ],
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error', // 禁用 ! 断言操作符
     },
   },
