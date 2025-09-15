@@ -2,6 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { getMarkdownMetadata } from '@/lib/markdown-server';
+import { fetchPostById } from '@/services/post-service';
 import { notFound } from 'next/navigation';
 
 interface SidebarPageProps {
@@ -18,6 +20,15 @@ export default async function SidebarPage({ params }: SidebarPageProps) {
   if (isNaN(contentId)) {
     notFound();
   }
+
+  // 获取文章数据
+  const post = await fetchPostById(contentId);
+  if (!post) {
+    notFound();
+  }
+
+  // 获取目录数据
+  const metadata = await getMarkdownMetadata(post.data);
 
   const author = {
     name: resolvedParams.user,
@@ -85,17 +96,21 @@ export default async function SidebarPage({ params }: SidebarPageProps) {
         </CardHeader>
         <CardContent className="pt-0">
           <nav className="space-y-0.5">
-            {/* {metadata.toc.map((item, index) => (
-              <a
-                key={index}
-                href={`#heading-${index}`}
-                className={`block text-xs py-1 px-2 rounded hover:bg-muted ${index === 0 ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                style={{ paddingLeft: `${(item.level - 1) * 12 + 8}px` }}
-              >
-                {item.title}
-              </a>
-            ))} */}
+            {metadata.toc.length > 0 ? (
+              metadata.toc.map((item, index) => (
+                <a
+                  key={index}
+                  href={`#${item.id}`}
+                  className={`block text-xs py-1 px-2 rounded hover:bg-muted transition-colors ${index === 0 ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  style={{ paddingLeft: `${(item.level - 1) * 12 + 8}px` }}
+                >
+                  {item.title}
+                </a>
+              ))
+            ) : (
+              <p className="text-xs text-muted-foreground py-2 px-2">暂无目录</p>
+            )}
           </nav>
         </CardContent>
       </Card>

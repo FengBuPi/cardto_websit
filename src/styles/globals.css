@@ -121,6 +121,11 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
       "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   }
+
+  /* 平滑滚动 */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Design Platform 特定样式 */

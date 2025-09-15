@@ -1,5 +1,6 @@
 'use client';
 
+import { generateId } from '@/lib/markdown-server';
 import type { Components } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -22,26 +23,84 @@ type MarkdownComponents = Components;
 // 自定义组件映射
 const components: MarkdownComponents = {
   // 标题组件
-  h1: ({ children, ...props }) => (
-    <h1 className="text-3xl font-bold text-foreground mb-6 mt-8 first:mt-0" {...props}>
-      {children}
-    </h1>
-  ),
-  h2: ({ children, ...props }) => (
-    <h2 className="text-2xl font-semibold text-foreground mb-4 mt-6" {...props}>
-      {children}
-    </h2>
-  ),
-  h3: ({ children, ...props }) => (
-    <h3 className="text-xl font-semibold text-foreground mb-3 mt-5" {...props}>
-      {children}
-    </h3>
-  ),
-  h4: ({ children, ...props }) => (
-    <h4 className="text-lg font-medium text-foreground mb-2 mt-4" {...props}>
-      {children}
-    </h4>
-  ),
+  h1: ({ children, ...props }) => {
+    const titleText = typeof children === 'string' ? children : children?.toString() || '';
+    const id = generateId(titleText);
+    return (
+      <h1
+        id={id}
+        className="text-3xl font-bold text-foreground mb-6 mt-8 first:mt-0 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h1>
+    );
+  },
+  h2: ({ children, ...props }) => {
+    const titleText = typeof children === 'string' ? children : children?.toString() || '';
+    const id = generateId(titleText);
+    return (
+      <h2
+        id={id}
+        className="text-2xl font-semibold text-foreground mb-4 mt-6 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h2>
+    );
+  },
+  h3: ({ children, ...props }) => {
+    const titleText = typeof children === 'string' ? children : children?.toString() || '';
+    const id = generateId(titleText);
+    return (
+      <h3
+        id={id}
+        className="text-xl font-semibold text-foreground mb-3 mt-5 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h3>
+    );
+  },
+  h4: ({ children, ...props }) => {
+    const titleText = typeof children === 'string' ? children : children?.toString() || '';
+    const id = generateId(titleText);
+    return (
+      <h4
+        id={id}
+        className="text-lg font-medium text-foreground mb-2 mt-4 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h4>
+    );
+  },
+  h5: ({ children, ...props }) => {
+    const titleText = typeof children === 'string' ? children : children?.toString() || '';
+    const id = generateId(titleText);
+    return (
+      <h5
+        id={id}
+        className="text-base font-medium text-foreground mb-2 mt-4 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h5>
+    );
+  },
+  h6: ({ children, ...props }) => {
+    const titleText = typeof children === 'string' ? children : children?.toString() || '';
+    const id = generateId(titleText);
+    return (
+      <h6
+        id={id}
+        className="text-sm font-medium text-foreground mb-2 mt-4 scroll-mt-20"
+        {...props}
+      >
+        {children}
+      </h6>
+    );
+  },
 
   // 段落
   p: ({ children, ...props }) => (

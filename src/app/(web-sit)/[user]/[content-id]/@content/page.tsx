@@ -1,5 +1,5 @@
 import { MarkdownRenderer } from '@/components/ui/markdown-renderer';
-import { getMarkdownMetadata } from '@/lib/markdown-server';
+import { extractMarkdownContent, getMarkdownMetadata } from '@/lib/markdown-server';
 import { fetchPostById } from '@/services/post-service';
 import { notFound } from 'next/navigation';
 
@@ -18,7 +18,7 @@ export default async function ContentPage({ params }: ContentPageProps) {
     notFound();
   }
 
-  // 服务端获取数据
+  // 服务端获取markdown数据
   const post = await fetchPostById(contentId);
 
   if (!post) {
@@ -29,21 +29,6 @@ export default async function ContentPage({ params }: ContentPageProps) {
   const metadata = await getMarkdownMetadata(post.data);
 
   // 提取实际的 Markdown 内容（去除代码块包装）
-  const extractMarkdownContent = (content: string): string => {
-    const trimmed = content.trim();
-
-    if (trimmed.startsWith('```md') && trimmed.endsWith('```')) {
-      return trimmed.slice(5, -3).trim();
-    } else if (trimmed.startsWith('```') && trimmed.endsWith('```')) {
-      const lines = trimmed.split('\n');
-      if (lines.length > 2) {
-        return lines.slice(1, -1).join('\n');
-      }
-    }
-
-    return content;
-  };
-
   const markdownContent = extractMarkdownContent(post.data);
 
   return (

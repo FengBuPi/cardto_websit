@@ -8,23 +8,35 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import remarkRehype from 'remark-rehype';
 
+// 生成ID的函数（用于标题锚点）
+export function generateId(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // 移除特殊字符
+    .replace(/\s+/g, '-') // 空格替换为连字符
+    .trim();
+}
+
+// 提取实际的 Markdown 内容（去除代码块包装）
+export function extractMarkdownContent(content: string): string {
+  const trimmed = content.trim();
+
+  if (trimmed.startsWith('```md') && trimmed.endsWith('```')) {
+    return trimmed.slice(5, -3).trim();
+  } else if (trimmed.startsWith('```') && trimmed.endsWith('```')) {
+    const lines = trimmed.split('\n');
+    if (lines.length > 2) {
+      return lines.slice(1, -1).join('\n');
+    }
+  }
+
+  return content;
+}
+
 export async function processMarkdownToHtml(markdown: string): Promise<string> {
   try {
-    // 检查内容是否被包装在代码块中
-    const trimmedMarkdown = markdown.trim();
-
-    // 如果内容以 ```md 开头，说明被包装在代码块中，需要提取实际内容
-    let actualMarkdown = trimmedMarkdown;
-    if (trimmedMarkdown.startsWith('```md') && trimmedMarkdown.endsWith('```')) {
-      // 提取 ```md 和 ``` 之间的内容
-      actualMarkdown = trimmedMarkdown.slice(5, -3).trim();
-    } else if (trimmedMarkdown.startsWith('```') && trimmedMarkdown.endsWith('```')) {
-      // 提取 ``` 和 ``` 之间的内容
-      const lines = trimmedMarkdown.split('\n');
-      if (lines.length > 2) {
-        actualMarkdown = lines.slice(1, -1).join('\n');
-      }
-    }
+    // 提取实际的 Markdown 内容（去除代码块包装）
+    const actualMarkdown = extractMarkdownContent(markdown);
 
     const processedContent = await remark()
       .use(remarkGfm) // GitHub Flavored Markdown
@@ -45,6 +57,27 @@ export async function processMarkdownToHtml(markdown: string): Promise<string> {
   }
 }
 
+// 使用正则表达式提取目录的函数
+function extractTocWithRegex(markdown: string): Array<{
+  id: string;
+  title: string;
+  level: number;
+}> {
+  // 匹配所有标题（# 到 ######）
+  const headings = markdown.match(/^#{1,6}\s+(.+)$/gm) || [];
+
+  return headings.map((heading) => {
+    const title = heading.replace(/^#+\s+/, '');
+    const level = heading.match(/^#+/)?.[0].length || 1;
+
+    return {
+      id: generateId(title),
+      title,
+      level
+    };
+  });
+}
+
 export async function getMarkdownMetadata(markdown: string): Promise<{
   title: string;
   description: string;
@@ -56,21 +89,8 @@ export async function getMarkdownMetadata(markdown: string): Promise<{
   wordCount: number;
   readingTime: number;
 }> {
-  // 检查内容是否被包装在代码块中
-  const trimmedMarkdown = markdown.trim();
-
-  // 如果内容以 ```md 开头，说明被包装在代码块中，需要提取实际内容
-  let actualMarkdown = trimmedMarkdown;
-  if (trimmedMarkdown.startsWith('```md') && trimmedMarkdown.endsWith('```')) {
-    // 提取 ```md 和 ``` 之间的内容
-    actualMarkdown = trimmedMarkdown.slice(5, -3).trim();
-  } else if (trimmedMarkdown.startsWith('```') && trimmedMarkdown.endsWith('```')) {
-    // 提取 ``` 和 ``` 之间的内容
-    const lines = trimmedMarkdown.split('\n');
-    if (lines.length > 2) {
-      actualMarkdown = lines.slice(1, -1).join('\n');
-    }
-  }
+  // 提取实际的 Markdown 内容（去除代码块包装）
+  const actualMarkdown = extractMarkdownContent(markdown);
 
   // 提取标题
   const titleMatch = actualMarkdown.match(/^#\s+(.+)$/m);
@@ -80,19 +100,15 @@ export async function getMarkdownMetadata(markdown: string): Promise<{
   const descriptionMatch = actualMarkdown.match(/^#\s+.+?\n\n([\s\S]+?)(?:\n\n|$)/);
   const description = descriptionMatch?.[1]?.replace(/\n/g, ' ').trim() ?? '';
 
-  // 提取目录
-  const headings = actualMarkdown.match(/^#{1,6}\s+(.+)$/gm) || [];
-  const toc = headings.map((heading, index) => ({
-    id: `heading-${index}`,
-    title: heading.replace(/^#+\s+/, ''),
-    level: heading.match(/^#+/)?.[0].length || 1
-  }));
+  // 使用正则表达式提取目录
+  const tocData = extractTocWithRegex(actualMarkdown);
+  console.log(tocData);
 
   return {
     title,
     description,
-    toc,
+    toc: tocData,
     wordCount: actualMarkdown.split(/\s+/).length,
-    readingTime: Math.ceil(actualMarkdown.split(/\s+/).length / 200) // 假设每分钟200字
+    readingTime: Math.ceil(actualMarkdown.split(/\s+/).length / 200)
   };
 }
